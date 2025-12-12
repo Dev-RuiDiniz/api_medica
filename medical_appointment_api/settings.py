@@ -1,4 +1,5 @@
 ## medical_appointment_api/settings.py
+import os
 
 """
 Django settings for medical_appointment_api project.
@@ -74,8 +75,16 @@ WSGI_APPLICATION = 'medical_appointment_api.wsgi.application'
 # Por padrão, vamos manter o SQLite 3. Depois, configuraremos o PostgreSQL (psycopg2)
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',
+        
+        # Lê variáveis de ambiente do docker-compose.yml ou usa fallback (padrão)
+        'NAME': os.environ.get('POSTGRES_NAME', 'medical_appointment_db'),
+        'USER': os.environ.get('POSTGRES_USER', 'docker_user'),
+        'PASSWORD': os.environ.get('POSTGRES_PASSWORD', 'docker_password'),
+        
+        # O hostname 'db' é o nome do serviço definido no docker-compose.yml
+        'HOST': os.environ.get('POSTGRES_HOST', 'db'),
+        'PORT': os.environ.get('POSTGRES_PORT', '5432'),
     }
 }
 
