@@ -1,18 +1,20 @@
-[project]
+## pyproject.toml (Corrigido para formato string dos autores)
+
+[tool.poetry]
 name = "api-medica"
 version = "0.1.0"
 description = "API médica desenvolvida com Django e Django Rest Framework."
-authors = [
-    {name = "Rui Franscisco de Paula",email = "rui.pdiniz@gmail.com"}
-]
-license = {text = "MIT"}
+authors = ["Rui Franscisco de Paula <rui.pdiniz@gmail.com>"] # CORREÇÃO AQUI
+license = "MIT"
 readme = "README.md"
-requires-python = ">=3.13"
-dependencies = [
-    "django (>=6.0,<7.0)",
-    "djangorestframework (>=3.16.1,<4.0.0)",
-    "psycopg2-binary (>=2.9.11,<3.0.0)"
-]
+
+
+[tool.poetry.dependencies]
+# Define a versão do Python requerida
+python = ">=3.13,<4.0" 
+django = "^6.0.0" 
+djangorestframework = "^3.16.1"
+psycopg2-binary = "^2.9.11"
 
 
 [build-system]
