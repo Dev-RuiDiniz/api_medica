@@ -1,0 +1,27 @@
+# .gitignore
+
+# Variáveis de Ambiente e Arquivos Sensíveis
+.env
+*.key
+*.pem
+
+# Python
+__pycache__/
+*.pyc
+# Ambientes Virtuais (VENV e Poetry)
+venv/
+.venv/
+.mypy_cache/
+.pytest_cache/
+
+# Banco de Dados Local (se houver)
+db.sqlite3
+
+# Logs
+*.log
+logs/
+.DS_Store
+
+# Docker (o contexto de build do Docker já é tratado pelo .dockerignore)
+# Apenas para garantir que não suba arquivos de runtime
+docker-compose.override.yml
