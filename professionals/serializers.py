@@ -5,7 +5,7 @@ from .models import Professional
 
 class ProfessionalSerializer(serializers.ModelSerializer):
     """
-    Serializer para o modelo Professional, incluindo validação customizada.
+    Serializer para o modelo Professional, incluindo validação customizada..
     """
     class Meta:
         model = Professional
