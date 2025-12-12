@@ -1,5 +1,5 @@
 """
-WSGI config for api_medica_core project.
+WSGI config for medical_appointment_api project.
 
 It exposes the WSGI callable as a module-level variable named ``application``.
 
@@ -11,6 +11,6 @@ import os
 
 from django.core.wsgi import get_wsgi_application
 
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'api_medica_core.settings')
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'medical_appointment_api.settings')
 
 application = get_wsgi_application()
