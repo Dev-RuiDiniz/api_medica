@@ -1,7 +1,7 @@
 # 1. IMAGEM BASE
 # Usamos uma imagem oficial do Python, baseada em Debian, que inclui o Poetry
 # e otimiza o tamanho final da imagem.
-FROM python:3.11-slim
+FROM python:3.12-slim
 
 # 2. VARIÁVEIS DE AMBIENTE
 # Evita que Python grave arquivos .pyc no disco (performance)
@@ -19,11 +19,7 @@ RUN pip install poetry==1.7.1
 WORKDIR /usr/src/app
 
 # 5. CÓPIA DOS ARQUIVOS DE DEPENDÊNCIAS
-# Copiamos apenas os arquivos necessários para instalar as dependências
-# Isso permite que o Docker faça cache nesta camada (melhorando o build)
 COPY pyproject.toml poetry.lock /usr/src/app/
 
 # 6. INSTALAÇÃO DAS DEPENDÊNCIAS
-# O Poetry instala todas as dependências listadas no pyproject.toml
-# e travadas no poetry.lock
 RUN poetry install --no-root
