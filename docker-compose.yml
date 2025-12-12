@@ -19,8 +19,8 @@ services:
       # Os valores DOCKER_* são apenas exemplos para o ambiente de desenvolvimento
       # e serão utilizados nas configurações do settings.py.
       POSTGRES_NAME: medical_appointment_db
-      POSTGRES_USER: docker_user
-      POSTGRES_PASSWORD: docker_password
+      POSTGRES_USER: api_user
+      POSTGRES_PASSWORD: 090691
       POSTGRES_HOST: db # Deve corresponder ao nome do serviço do banco de dados
       POSTGRES_PORT: 5432
       
@@ -51,8 +51,8 @@ services:
     # Variáveis de ambiente para configurar o Postgres
     environment:
       POSTGRES_DB: medical_appointment_db
-      POSTGRES_USER: docker_user
-      POSTGRES_PASSWORD: docker_password
+      POSTGRES_USER: api_user
+      POSTGRES_PASSWORD: 090691
       
     # Mapeamento de Volumes: Armazena os dados do banco em um volume persistente.
     # Isso impede que os dados sejam perdidos quando o contêiner for removido.
@@ -61,7 +61,7 @@ services:
       
     # Verificação de saúde: Garante que o Django só inicie quando o DB estiver pronto.
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U docker_user"]
+      test: ["CMD-SHELL", "pg_isready -U api_user"]
       interval: 5s
       timeout: 5s
       retries: 5
