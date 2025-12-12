@@ -1,0 +1,80 @@
+version: '3.8'
+
+services:
+  # 1. SERVIÇO DA APLICAÇÃO WEB (Django/DRF)
+  app:
+    # Construir a imagem a partir do Dockerfile no diretório atual
+    build: 
+      context: .
+      dockerfile: Dockerfile
+    
+    # Mapeamento de portas: <Porta_Externa>:<Porta_Interna>
+    # Mapeamos a porta 8000 do container para a porta 8000 da sua máquina local
+    ports:
+      - "8000:8000"
+      
+    # Variáveis de Ambiente necessárias para a aplicação
+    # (Configurações do banco de dados para o Django)
+    environment:
+      # Os valores DOCKER_* são apenas exemplos para o ambiente de desenvolvimento
+      # e serão utilizados nas configurações do settings.py.
+      POSTGRES_NAME: medical_appointment_db
+      POSTGRES_USER: docker_user
+      POSTGRES_PASSWORD: docker_password
+      POSTGRES_HOST: db # Deve corresponder ao nome do serviço do banco de dados
+      POSTGRES_PORT: 5432
+      
+    # Depende do banco de dados estar "pronto" (saudável) antes de iniciar
+    depends_on:
+      db:
+        condition: service_healthy
+        
+    # Volumes: Mapeia o código local para dentro do contêiner.
+    # Isso permite que alterações no código local sejam refletidas instantaneamente.
+    volumes:
+      - .:/usr/src/app
+      
+    # Comando de inicialização do serviço: 
+    # Primeiro, executa as migrações, depois inicia o servidor de desenvolvimento
+    command: >
+      sh -c "poetry run python manage.py migrate &&
+             poetry run python manage.py runserver 0.0.0.0:8000"
+    
+    # Redes customizadas (opcional, mas boa prática)
+    networks:
+      - medical_network
+
+  # 2. SERVIÇO DO BANCO DE DADOS (PostgreSQL)
+  db:
+    image: postgres:16-alpine # Imagem leve e estável do PostgreSQL
+    
+    # Variáveis de ambiente para configurar o Postgres
+    environment:
+      POSTGRES_DB: medical_appointment_db
+      POSTGRES_USER: docker_user
+      POSTGRES_PASSWORD: docker_password
+      
+    # Mapeamento de Volumes: Armazena os dados do banco em um volume persistente.
+    # Isso impede que os dados sejam perdidos quando o contêiner for removido.
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+      
+    # Verificação de saúde: Garante que o Django só inicie quando o DB estiver pronto.
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U docker_user"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+    # Redes customizadas
+    networks:
+      - medical_network
+
+# 3. VOLUMES
+volumes:
+  postgres_data: # Volume nomeado para persistência dos dados do PostgreSQL
+
+# 4. REDES
+networks:
+  medical_network: # Rede customizada para que os serviços se comuniquem pelo nome
+    driver: bridge
