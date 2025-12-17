@@ -18,10 +18,7 @@ from django.contrib import admin
 from django.urls import path, include
 
 urlpatterns = [
-    # Rota para o painel de administração
     path('admin/', admin.site.urls),
-    
-    # Rota para a API. Inclui todas as rotas definidas em professionals/urls.py
-    # O endpoint final será: http://localhost:8000/api/v1/professionals/
-    path('api/v1/', include('professionals.urls')), 
-]
+    path('api/v1/', include('professionals.urls')),
+    path('api/v1/', include('appointments.urls')), 
+    ]
