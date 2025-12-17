@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     
     # Local apps
     'professionals', # Seu primeiro app
+    'appointments',  # App para gerenciar consultas médicas
 ]
 
 MIDDLEWARE = [
