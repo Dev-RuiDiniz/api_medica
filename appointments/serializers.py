@@ -1,34 +1,33 @@
 from rest_framework import serializers
+from django.utils import timezone # Importação essencial para lidar com fusos horários
 from .models import Appointment
 
 class AppointmentSerializer(serializers.ModelSerializer):
-    """
-    Serializer para o modelo Appointment.
-    
-    Exibe o ID do profissional para operações de escrita (POST/PUT)
-    e o nome do profissional apenas para leitura.
-    """
-    
-    # ReadOnlyField: Busca o atributo 'name' através da ForeignKey 'professional'.
-    # O 'source' permite navegar no relacionamento: do agendamento para o profissional.
     professional_name = serializers.ReadOnlyField(source='professional.name')
 
     class Meta:
         model = Appointment
         fields = [
             'id', 
-            'professional',      # ID do profissional (obrigatório no POST)
-            'professional_name', # Nome social (retornado apenas no GET)
+            'professional', 
+            'professional_name', 
             'date', 
             'created_at', 
             'updated_at'
         ]
-        
+
     def validate_date(self, value):
         """
-        Uma pequena validação extra: não permitir agendamentos no passado.
+        Validação de segurança: impede agendamentos em datas retroativas.
         """
-        from django.utils import timezone
+        # Verifica se a data enviada (value) é menor que o momento atual
         if value < timezone.now():
-            raise serializers.ValidationError("A data da consulta não pode ser no passado.")
+            raise serializers.ValidationError(
+                "Não é possível agendar uma consulta para uma data ou horário no passado."
+            )
+        
+        # Opcional: Validar se a consulta é agendada com pelo menos 30 min de antecedência
+        # if value < timezone.now() + timezone.timedelta(minutes=30):
+        #     raise serializers.ValidationError("Consultas devem ser agendadas com 30 min de antecedência.")
+
         return value
