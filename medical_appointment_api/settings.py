@@ -42,7 +42,8 @@ INSTALLED_APPS = [
     
     # Third-party apps
     'rest_framework',
-    'rest_framework.authtoken',# Django REST Framework
+    'rest_framework.authtoken',
+    'corsheaders'# Django REST Framework
     
     # Local apps
     'professionals', # Seu primeiro app
@@ -52,6 +53,7 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -154,3 +156,17 @@ REST_FRAMEWORK = {
         'rest_framework.permissions.IsAuthenticated',
     ],
 }
+
+# ==============================================================================
+# 8. CORS CONFIGURATIONS
+# ==============================================================================
+
+# Se True, permite QUALQUER origem (Use apenas em desenvolvimento inicial)
+CORS_ALLOW_ALL_ORIGINS = DEBUG 
+
+# Para produção, use a whitelist específica:
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:3000",  # Comum para React
+    "http://127.0.0.1:3000",
+    "http://localhost:5173",  # Comum para Vite
+]
