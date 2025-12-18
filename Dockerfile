@@ -49,8 +49,15 @@ COPY --from=builder /app/.venv /app/.venv
 # Copia o código fonte do projeto
 COPY . .
 
-# Expõe a porta do Django
+# Dá permissão de execução para o script
+RUN chmod +x /app/entrypoint.sh
+
+# Expõe a porta
 EXPOSE 8000
 
-# O comando de execução permanece o mesmo, mas agora usando o binário do venv
-CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
+# Define o Entrypoint
+ENTRYPOINT ["/app/entrypoint.sh"]
+
+# Comando padrão (Agora preparado para produção via Gunicorn)
+# Você precisará adicionar 'gunicorn' ao seu pyproject.toml
+CMD ["gunicorn", "--bind", "0.0.0.0:8000", "medical_appointment_api.wsgi:application"]
