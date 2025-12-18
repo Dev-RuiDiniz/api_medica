@@ -16,4 +16,4 @@ class ProfessionalModelTest(TestCase):
 
     def test_professional_str(self):
         """Valida se o método __str__ do modelo retorna o nome correto"""
-        self.assertEqual(str(self.professional), "Dra. Ana")
+        self.assertEqual(str(self.professional), "Dra. Ana (Pediatra)")
