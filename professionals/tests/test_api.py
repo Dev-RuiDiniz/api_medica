@@ -6,42 +6,43 @@ from django.urls import reverse
 
 class ProfessionalAPITest(APITestCase):
     def setUp(self):
-        # 1. Autenticação
+        # 1. Autenticação (Necessário se a sua View tiver permissões)
         self.user = User.objects.create_user(username="testadmin", password="password123")
         self.client = APIClient()
         self.client.force_authenticate(user=self.user)
         
-        # 2. URL (Certifique-se que o nome no urls.py é 'professional-list')
-        # Se não tiver nome na rota, use a string direta: "/api/professionals/"
-        try:
-            self.list_url = reverse("professional-list")
-        except:
-            self.list_url = "/api/professionals/"
+        # 2. URL da API
+        self.list_url = "/api/professionals/"
 
-        # 3. Dados (Ajustados para os campos em PORTUGUÊS do seu modelo)
+        # 3. Dados (Sincronizados com o seu models.py)
         self.professional_data = {
-            "nome": "Dra. Ana",
-            "especialidade": "Pediatra",
-            "crm": "123456",
-            "email": "ana@teste.com",
-            "contato": "11988887777" 
+            "name": "Dra. Ana Silva",
+            "profession": "Pediatra",
+            "address": "Rua das Flores, 123",
+            "contact": "11988887777",
+            "registration_number": "CRM/SP 123456"
         }
 
     def test_create_professional_success(self):
+        """Garante que é possível criar um profissional via POST"""
         response = self.client.post(self.list_url, self.professional_data, format="json")
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
     def test_list_professionals(self):
+        """Garante que o GET retorna a lista de profissionais cadastrados"""
         Professional.objects.create(**self.professional_data)
         response = self.client.get(self.list_url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertTrue(len(response.data) > 0)
+        # Verifica se o item criado está na lista
+        self.assertEqual(len(response.data), 1)
 
     def test_contact_sanitization_in_api(self):
-        # Testa se a limpeza que criamos no Serializer está funcionando
+        """Valida se a limpeza do contato funciona via API (removendo máscaras)"""
         data_with_mask = self.professional_data.copy()
-        data_with_mask["contato"] = "(11) 98888-7777"
+        data_with_mask["contact"] = "(11) 98888-7777"
+        data_with_mask["registration_number"] = "CRM/SP 654321" # Unique constraint
+        
         response = self.client.post(self.list_url, data_with_mask, format="json")
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-        # O banco deve salvar apenas os números
-        self.assertEqual(response.data["contato"], "11988887777")
+        # O valor retornado deve ser apenas números (conforme sua lógica de validação no serializer)
+        self.assertEqual(response.data["contact"], "11988887777")
