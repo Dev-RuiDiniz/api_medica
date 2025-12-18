@@ -38,11 +38,11 @@ jobs:
       - name: Install Linting & Test Tools
         run: |
           python -m pip install --upgrade pip
-          # A versão 7+ do flake8 é obrigatória para o Python 3.12
-          pip install "flake8>=7.0.0" blue poetry
+          # Usamos Black para formatação e Flake8 para estilo
+          pip install "flake8>=7.0.0" black poetry
 
-      - name: Run Blue Check (Formatting)
-        run: blue . --check
+      - name: Run Black (Formatter Check)
+        run: black . --check
 
       - name: Run Flake8 (Style Guide)
         run: flake8 . --exclude=migrations,.venv,venv,staticfiles
