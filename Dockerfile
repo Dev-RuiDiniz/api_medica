@@ -1,25 +1,56 @@
-# 1. IMAGEM BASE
-# Usamos uma imagem oficial do Python, baseada em Debian, que inclui o Poetry
-# e otimiza o tamanho final da imagem.
-FROM python:3.12-slim
+# ==========================================
+# ESTÁGIO 1: Builder (Ambiente de Compilação)
+# ==========================================
+FROM python:3.12-slim AS builder
 
-# 2. VARIÁVEIS DE AMBIENTE
-# Evita que Python grave arquivos .pyc no disco (performance)
-ENV PYTHONDONTWRITEBYTECODE 1 
-# Não armazena saída em buffer (útil para logs em containers)
-ENV PYTHONUNBUFFERED 1
+# Impede que o Python gere arquivos .pyc e permite logs em tempo real
+ENV PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1 \
+    POETRY_NO_INTERACTION=1 \
+    POETRY_VIRTUALENVS_IN_PROJECT=true \
+    POETRY_VIRTUALENVS_CREATE=true
 
-# 3. INSTALAÇÃO DO POETRY (Se a imagem 'slim' não o incluir por padrão)
-# Geralmente, imagens 'slim' não incluem o Poetry, então instalamos ele via pip.
-# A versão 1.7.1 é a mais estável e recente na época.
-RUN pip install poetry==1.7.1
+WORKDIR /app
 
-# 4. WORKING DIRECTORY
-# Define o diretório de trabalho padrão dentro do container.
-WORKDIR /usr/src/app
+# Instala dependências de sistema necessárias para compilar pacotes (como psycopg2)
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    build-essential \
+    libpq-dev \
+    && rm -rf /var/lib/apt/lists/*
 
-# 5. CÓPIA DOS ARQUIVOS DE DEPENDÊNCIAS
-COPY pyproject.toml poetry.lock /usr/src/app/
+# Instala o Poetry
+RUN pip install poetry
 
-# 6. INSTALAÇÃO DAS DEPENDÊNCIAS
-RUN poetry install --no-root
+# Copia apenas os arquivos de dependências primeiro (otimiza cache)
+COPY pyproject.toml poetry.lock ./
+
+# Instala as dependências (cria a pasta .venv dentro de /app)
+RUN poetry install --no-root --only main
+
+# ==========================================
+# ESTÁGIO 2: Runtime (Imagem Final de Produção)
+# ==========================================
+FROM python:3.12-slim AS runtime
+
+ENV PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1 \
+    PATH="/app/.venv/bin:$PATH"
+
+WORKDIR /app
+
+# Instala apenas a biblioteca runtime do Postgres (necessária para rodar, não para compilar)
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    libpq5 \
+    && rm -rf /var/lib/apt/lists/*
+
+# Copia o ambiente virtual (Python + Bibliotecas) do estágio builder
+COPY --from=builder /app/.venv /app/.venv
+
+# Copia o código fonte do projeto
+COPY . .
+
+# Expõe a porta do Django
+EXPOSE 8000
+
+# O comando de execução permanece o mesmo, mas agora usando o binário do venv
+CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
