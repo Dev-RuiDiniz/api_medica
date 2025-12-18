@@ -9,23 +9,42 @@ class Migration(migrations.Migration):
     initial = True
 
     dependencies = [
-        ('professionals', '0001_initial'),
+        ("professionals", "0001_initial"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='Appointment',
+            name="Appointment",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('date', models.DateTimeField(verbose_name='Data e Horário da Consulta')),
-                ('created_at', models.DateTimeField(auto_now_add=True)),
-                ('updated_at', models.DateTimeField(auto_now=True)),
-                ('professional', models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, related_name='appointments', to='professionals.professional', verbose_name='Profissional')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "date",
+                    models.DateTimeField(verbose_name="Data e Horário da Consulta"),
+                ),
+                ("created_at", models.DateTimeField(auto_now_add=True)),
+                ("updated_at", models.DateTimeField(auto_now=True)),
+                (
+                    "professional",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.PROTECT,
+                        related_name="appointments",
+                        to="professionals.professional",
+                        verbose_name="Profissional",
+                    ),
+                ),
             ],
             options={
-                'verbose_name': 'Agendamento',
-                'verbose_name_plural': 'Agendamentos',
-                'ordering': ['date'],
+                "verbose_name": "Agendamento",
+                "verbose_name_plural": "Agendamentos",
+                "ordering": ["date"],
             },
         ),
     ]

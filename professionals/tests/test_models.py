@@ -1,6 +1,7 @@
 from django.test import TestCase
 from professionals.models import Professional
 
+
 class ProfessionalModelTest(TestCase):
     def setUp(self):
         """Configura os dados iniciais para o teste"""
@@ -9,7 +10,7 @@ class ProfessionalModelTest(TestCase):
             profession="Pediatra",
             address="Rua A, 123",
             contact="11999999999",
-            registration_number="CRM123"
+            registration_number="CRM123",
         )
 
     def test_professional_str(self):

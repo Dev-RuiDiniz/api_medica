@@ -7,24 +7,53 @@ class Migration(migrations.Migration):
 
     initial = True
 
-    dependencies = [
-    ]
+    dependencies = []
 
     operations = [
         migrations.CreateModel(
-            name='Professional',
+            name="Professional",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(max_length=255, verbose_name='Nome Completo / Social')),
-                ('profession', models.CharField(max_length=100, verbose_name='Profissão')),
-                ('address', models.CharField(max_length=255, verbose_name='Endereço')),
-                ('contact', models.CharField(max_length=20, verbose_name='Contato (Telefone/Celular)')),
-                ('registration_number', models.CharField(blank=True, max_length=50, null=True, unique=True, verbose_name='Registro (CRM/CREFITO/etc.)')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "name",
+                    models.CharField(
+                        max_length=255, verbose_name="Nome Completo / Social"
+                    ),
+                ),
+                (
+                    "profession",
+                    models.CharField(max_length=100, verbose_name="Profissão"),
+                ),
+                ("address", models.CharField(max_length=255, verbose_name="Endereço")),
+                (
+                    "contact",
+                    models.CharField(
+                        max_length=20, verbose_name="Contato (Telefone/Celular)"
+                    ),
+                ),
+                (
+                    "registration_number",
+                    models.CharField(
+                        blank=True,
+                        max_length=50,
+                        null=True,
+                        unique=True,
+                        verbose_name="Registro (CRM/CREFITO/etc.)",
+                    ),
+                ),
             ],
             options={
-                'verbose_name': 'Profissional',
-                'verbose_name_plural': 'Profissionais',
-                'ordering': ['name'],
+                "verbose_name": "Profissional",
+                "verbose_name_plural": "Profissionais",
+                "ordering": ["name"],
             },
         ),
     ]
