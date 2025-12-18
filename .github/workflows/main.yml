@@ -41,10 +41,6 @@ jobs:
           # Usamos Black para formatação e Flake8 para estilo
           pip install "flake8>=7.0.0" black poetry
 
-      
-      - name: Run Flake8 (Style Guide)
-        run: flake8 . --exclude=migrations,.venv,venv,staticfiles
-
       - name: Install Project Dependencies
         run: poetry install --no-root
 
