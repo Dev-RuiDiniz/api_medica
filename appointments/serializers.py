@@ -1,5 +1,4 @@
-from django.utils import \
-    timezone  # Importação essencial para lidar com fusos horários
+from django.utils import timezone
 from rest_framework import serializers
 
 from .models import Appointment
@@ -23,14 +22,11 @@ class AppointmentSerializer(serializers.ModelSerializer):
         """
         Validação de segurança: impede agendamentos em datas retroativas.
         """
-        # Verifica se a data enviada (value) é menor que o momento atual
         if value < timezone.now():
+            # Quebramos a string em duas para respeitar o limite de 88 caracteres
             raise serializers.ValidationError(
-                "Não é possível agendar uma consulta para uma data ou horário no passado."
+                "Não é possível agendar uma consulta para uma "
+                "data ou horário no passado."
             )
-
-        # Opcional: Validar se a consulta é agendada com pelo menos 30 min de antecedência
-        # if value < timezone.now() + timezone.timedelta(minutes=30):
-        #     raise serializers.ValidationError("Consultas devem ser agendadas com 30 min de antecedência.")
 
         return value
