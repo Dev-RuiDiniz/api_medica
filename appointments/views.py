@@ -4,6 +4,7 @@ from django.shortcuts import render
 from rest_framework import viewsets
 from .models import Appointment
 from .serializers import AppointmentSerializer
+from rest_framework.exceptions import ValidationError
 
 class AppointmentViewSet(viewsets.ModelViewSet):
     """
@@ -15,17 +16,14 @@ class AppointmentViewSet(viewsets.ModelViewSet):
     queryset = Appointment.objects.all()
 
     def get_queryset(self):
-        """
-        Sobrescreve o queryset padrão para permitir filtragem dinâmica.
-        """
-        # Captura o queryset base (todos os agendamentos)
         queryset = Appointment.objects.all()
-        
-        # Tenta obter o professional_id dos parâmetros da URL (Query Params)
         professional_id = self.request.query_params.get('professional_id')
         
-        if professional_id is not None:
-            # Filtra os agendamentos pelo ID do profissional informado
+        if professional_id:
+            # Validação de Tipo: Garante que é um número antes de chegar ao banco
+            if not professional_id.isdigit():
+                raise ValidationError({"professional_id": "Este campo deve ser um número inteiro."})
+                
             queryset = queryset.filter(professional_id=professional_id)
             
         return queryset
