@@ -43,7 +43,7 @@ INSTALLED_APPS = [
     # Third-party apps
     'rest_framework',
     'rest_framework.authtoken',
-    'corsheaders'# Django REST Framework
+    'corsheaders', # Django REST Framework
     
     # Local apps
     'professionals', # Seu primeiro app
@@ -139,6 +139,8 @@ USE_TZ = True
 # ==============================================================================
 
 STATIC_URL = 'static/'
+
+STATIC_ROOT = BASE_DIR / 'staticfiles'
 
 # Default primary key field type
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
