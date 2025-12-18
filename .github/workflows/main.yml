@@ -1,0 +1,63 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+
+jobs:
+  lint-and-test:
+    runs-on: ubuntu-latest
+    
+    # Define o banco de dados para os testes
+    services:
+      postgres:
+        image: postgres:15
+        env:
+          POSTGRES_DB: medical_appointment_db
+          POSTGRES_USER: api_user
+          POSTGRES_PASSWORD: api_password
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: 'pip'
+
+      - name: Install Linting & Test Tools
+        run: |
+          python -m pip install --upgrade pip
+          # A versão 7+ do flake8 é obrigatória para o Python 3.12
+          pip install "flake8>=7.0.0" blue poetry
+
+      - name: Run Blue Check (Formatting)
+        run: blue . --check
+
+      - name: Run Flake8 (Style Guide)
+        run: flake8 . --exclude=migrations,.venv,venv,staticfiles
+
+      - name: Install Project Dependencies
+        run: poetry install --no-root
+
+      - name: Run Security Tests
+        env:
+          SECRET_KEY: "ci-test-key-secret"
+          DEBUG: "True"
+          POSTGRES_NAME: medical_appointment_db
+          POSTGRES_USER: api_user
+          POSTGRES_PASSWORD: api_password
+          POSTGRES_HOST: localhost
+          POSTGRES_PORT: 5432
+        run: |
+          poetry run python manage.py test professionals.tests.test_security
