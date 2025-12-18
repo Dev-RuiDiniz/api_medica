@@ -1,6 +1,8 @@
 # Create your models here.
 from django.db import models
-from professionals.models import Professional  # Importando o modelo do outro app
+
+from professionals.models import \
+    Professional  # Importando o modelo do outro app
 
 
 class Appointment(models.Model):

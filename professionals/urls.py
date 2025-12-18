@@ -1,6 +1,7 @@
 # professionals/urls.py
 
 from rest_framework.routers import DefaultRouter
+
 from .views import ProfessionalViewSet
 
 # 1. Instancia o DefaultRouter. Ele cuidará das URLs

@@ -1,5 +1,7 @@
+from django.utils import \
+    timezone  # Importação essencial para lidar com fusos horários
 from rest_framework import serializers
-from django.utils import timezone  # Importação essencial para lidar com fusos horários
+
 from .models import Appointment
 
 

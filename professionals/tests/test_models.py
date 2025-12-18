@@ -1,4 +1,5 @@
 from django.test import TestCase
+
 from professionals.models import Professional
 
 
