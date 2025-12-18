@@ -1,9 +1,10 @@
-# Create your models here.
+# appointments/models.py
 from django.db import models
 
-from professionals.models import \
-    Professional  # Importando o modelo do outro app
-
+# Importação usando parênteses (padrão Black/PEP 8)
+from professionals.models import (
+    Professional
+)
 
 class Appointment(models.Model):
     """

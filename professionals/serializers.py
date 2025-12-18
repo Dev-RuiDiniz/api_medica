@@ -7,7 +7,7 @@ from .models import Professional
 
 class ProfessionalSerializer(serializers.ModelSerializer):
     """
-    Serializer para o modelo Professional, incluindo validação customizada..
+    Serializer para o modelo Professional, incluindo validação customizada.
     """
 
     class Meta:
@@ -22,7 +22,6 @@ class ProfessionalSerializer(serializers.ModelSerializer):
         3. Garante que o campo contém apenas dígitos após a sanitização.
         """
         # 1. Sanitização: Remove espaços, traços, parênteses e pontos
-        # Esta é a primeira camada de limpeza (sanitização)
         sanitized_contact = "".join(filter(str.isdigit, value))
 
         # 2. Validação de Tamanho
@@ -30,16 +29,16 @@ class ProfessionalSerializer(serializers.ModelSerializer):
         max_length = 11  # Ex: (XX) 9XXXX-XXXX (com nono dígito)
 
         if not (min_length <= len(sanitized_contact) <= max_length):
+            # Quebramos a string para não ultrapassar o limite de caracteres da linha
             raise serializers.ValidationError(
-                f"O campo Contato deve ter entre {min_length} e {max_length} dígitos (após remover caracteres de formatação)."
+                f"O campo Contato deve ter entre {min_length} e "
+                f"{max_length} dígitos (após remover formatação)."
             )
 
-        # 3. Garante que o campo original não era apenas lixo, embora o filtro já ajude
+        # 3. Garante que o campo contém apenas dígitos
         if not sanitized_contact.isdigit():
             raise serializers.ValidationError(
                 "O campo Contato deve conter apenas caracteres numéricos."
             )
 
-        # Retorna o valor sanitizado (apenas dígitos) para ser salvo no banco de dados.
-        # Isto garante que o dado salvo é limpo e padronizado.
         return sanitized_contact
