@@ -12,7 +12,7 @@ class ProfessionalAPITest(APITestCase):
         self.client.force_authenticate(user=self.user)
         
         # 2. URL da API
-        self.list_url = "/api/professionals/"
+        self.list_url = "/api/v1/professionals/"
 
         # 3. Dados (Sincronizados com o seu models.py)
         self.professional_data = {
